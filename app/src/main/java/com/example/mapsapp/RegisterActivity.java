@@ -1,6 +1,7 @@
 package com.example.mapsapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     private EditText password_EditText;
     private EditText email_EditText;
     private Button registerButton;
+    boolean response = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +53,20 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 try{
                     JSONObject jsonObject = new JSONObject(response);
                     Log.i("json",response.toString());
-                    Toast.makeText(getApplicationContext(),jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                    String message  = jsonObject.getString("error");
+                    if(message.equals("false")){
+                        startActivity(new Intent(getApplicationContext(),Pop.class));
+                        //backtoMain();
+                    }else{
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -87,6 +96,11 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             registerUser();
             Log.i("click","clicked");
         }
+    }
+
+    private void backtoMain() {
+        Intent back_to_main = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(back_to_main);
     }
 
 }
